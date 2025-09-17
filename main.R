@@ -269,23 +269,6 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
 
 ################################ COMTRADE DATA ##############################
 #-------------------------------------------------------------------------------
-## Brazilian Imports from the U.S.
-#-------------------------------------------------------------------------------
-# Download and read Brazil's import data
-# get_data_br(2015, 2024, type = "IMP", cnty_cod = "249")
-imp_br_eua <- read_csv2("data/IMP_brasil_249_2015_2024.csv", show_col_types = FALSE)
-
-imp_br_eua
-
-# Summarize Brazil's total imports from the U.S. by year
-imp_br_eua_ano <- imp_br_eua %>%
-  group_by(CO_ANO) %>%
-  summarise(TOTAL_ANO = sum(VL_FOB, na.rm = TRUE)) %>%
-  rename(ano = CO_ANO, imp_br = TOTAL_ANO)
-
-imp_br_eua_ano
-
-#-------------------------------------------------------------------------------
 ## U.S. Exports to Brazil
 ## Data from https://comtradeplus.un.org/
 #-------------------------------------------------------------------------------
