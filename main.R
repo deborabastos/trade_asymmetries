@@ -1,97 +1,100 @@
+# Load necessary libraries
 library(tidyverse)
-library(tidyr)
 library(scales)
 library(readxl)
 
-setwd("C:/Users/debora.bastos/OneDrive - mtegovbr/Documentos/trade_asymmetries")
-
+# Load custom function to get Brazilian trade data
 source("./R/get_data_br.R")
 
-
-################## DADOS BRASILEIROS DE EXPORTAÇÃO BRASIL - EUA ##################
-
-# Baixar dados do Brasil
-get_data_br(2015, 2024, type = "EXP", cnty_cod = "249")
-get_data_br(2015, 2024, type = "IMP", cnty_cod = "249")
-
-
-#Limpar ambiente
+# Clear the environment
 rm(list = ls())
 
-# Salva dados em tabela
-exp_br_eua <- readr::read_csv2("data/EXP_brasil_249_2015_2024.csv", show_col_types = FALSE)
+# Set working directory 
+setwd("C:/Users/debora.bastos/OneDrive - mtegovbr/Documentos/trade_asymmetries")
 
-# Visualizar resultado
-head(exp_br_eua)
+#-------------------------------------------------------------------------------
+## Brazilian Exports to the U.S.
+#-------------------------------------------------------------------------------
+# Download and read Brazil's export data
+# get_data_br(2015, 2024, type = "EXP", cnty_cod = "249")
+exp_br_eua <- read_csv2("data/EXP_brasil_249_2015_2024.csv", show_col_types = FALSE)
 
-# Total das exportações do Brasil para os EUA por ano
-exp_br_eua_total_ano <- exp_br_eua %>%
+# Summarize Brazil's total exports to the U.S. by year
+exp_br_eua_ano <- exp_br_eua %>%
   group_by(CO_ANO) %>%
-  summarise(TOTAL_ANO = sum(VL_FOB, na.rm = TRUE), .groups = "drop")
+  summarise(TOTAL_ANO = sum(VL_FOB, na.rm = TRUE)) %>%
+  rename(ano = CO_ANO, exp_br = TOTAL_ANO)
 
-# Definindo variável ANO como número inteiro
-exp_br_eua_total_ano$CO_ANO = as.integer(exp_br_eua_total_ano$CO_ANO)
+exp_br_eua_ano
 
-# Visualizar resultado
-exp_br_eua_total_ano
-
-
-################## DADOS AMERICANOS DE IMPORTAÇÃO EUA - BR ##################
-# Ler o arquivo compilado de importação EUA - BR
-imp_eua_br <- readxl::read_excel(
+#-------------------------------------------------------------------------------
+## U.S. Imports from Brazil
+#-------------------------------------------------------------------------------
+# Read U.S. import data
+imp_eua_br <- read_excel(
   "data/IMP_eua_br_2015_2024.xlsx",
   sheet = "General Customs Value",
   range = "B3:L4218"
 )
 
-# Visualizar resultado
-head(imp_eua_br)
-tail(imp_eua_br)
-
-# Arruma o dataframe
-imp_eua_br_hts <- imp_eua_br %>%
+# Tidy the U.S. import data and summarize by year
+imp_eua_br_ano <- imp_eua_br %>%
   pivot_longer(
-    cols = matches("^\\d{4}$"), # Seleciona colunas de ano
-    names_to = "ANO", # Nome da coluna de ano
-    values_to = "VALOR" # Nome da coluna de valor
+    cols = matches("^\\d{4}$"),
+    names_to = "ANO",
+    values_to = "VALOR"
   ) %>%
-  rename(HTS = `HTS Number`) # Renomeia coluna HTS
-
-imp_eua_br_hts
-
-imp_eua_br_ano <- imp_eua_br_hts %>%
   group_by(ANO) %>%
-  summarise(TOTAL_ANO = sum(VALOR, na.rm = TRUE), .groups = "drop")
-
-# Definindo variável ANO como número inteiro
-imp_eua_br_ano$ANO = as.integer(imp_eua_br_ano$ANO)
+  summarise(TOTAL_ANO = sum(VALOR, na.rm = TRUE)) %>%
+  rename(ano = ANO, imp_usa = TOTAL_ANO) %>%
+  mutate(ano = as.integer(ano))
 
 imp_eua_br_ano
 
-
-# colocando dados em dataframe único
-exp_br_imp_usa <- data.frame(
-  x = exp_br_eua_total_ano$CO_ANO,
-  exp_br = exp_br_eua_total_ano$TOTAL_ANO,
-  imp_usa = imp_eua_br_ano$TOTAL_ANO,
-)
-
-# Renomear a coluna x para ano
-exp_br_imp_usa <- exp_br_imp_usa %>%
-  rename(ano = x)
-
+#-------------------------------------------------------------------------------
+## Combine and Plot the Data
+#-------------------------------------------------------------------------------
+# Join the two data frames
+exp_br_imp_usa <- full_join(exp_br_eua_ano, imp_eua_br_ano, by = "ano")
 
 exp_br_imp_usa
 
-#Plota gráfico
-ggplot(exp_br_imp_usa, mapping = aes(x = ano)) +
-  geom_line(aes(y = exp_br/1000000000, color = "ExpBR")) +
-  geom_line(aes(y = imp_usa/1000000000, color = "ImpUSA")) +
-  scale_x_continuous(breaks = exp_br_imp_usa$ano, labels = as.integer(exp_br_imp_usa$ano)) +
-  scale_y_continuous(labels = scales::comma) +
+# Convert to a "long" format for easier plotting with ggplot2
+exp_br_imp_usa_long <- exp_br_imp_usa %>%
+  pivot_longer(
+    cols = c(exp_br, imp_usa),
+    names_to = "tipo",
+    values_to = "valor_bilhoes"
+  ) %>%
+  mutate(valor_bilhoes = valor_bilhoes / 1e9) # Convert to billions
+
+exp_br_imp_usa_long
+
+# Create the plot
+ggplot(exp_br_imp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  scale_color_manual(
+    values = c("exp_br" = "#1f78b4", "imp_usa" = "#e31a1c"),
+    labels = c("Exportações do Brasil (para os EUA)", "Importações dos EUA (do Brasil)")
+  ) +
+  scale_x_continuous(breaks = unique(exp_br_imp_usa_long$ano)) +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")) +
   labs(
-    title = "Exportações Brasil vs. Importações EUA",
-    x = "Anos",
-    y = "Valores (bilhões)",
-    color = ""
-  )
+    title = "Asimetrias de Comércio: Brasil vs. EUA (2015-2024)",
+    subtitle = "Comparação dos dados de exportação do Brasil e de importação dos EUA",
+    x = "Ano",
+    y = "Valor (bilhões USD)",
+    color = "Dados"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
+
+
+
+
+
+
+################## DADOS BRASILEIROS DE IMPORTAÇÃO BRASIL  EUA ##################
+get_data_br(2015, 2024, type = "IMP", cnty_cod = "249")
