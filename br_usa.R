@@ -1,3 +1,6 @@
+# Clear the environment
+rm(list = ls())
+
 # Load necessary libraries
 library(tidyverse)
 library(scales)
@@ -6,11 +9,8 @@ library(readxl)
 # Load custom function to get Brazilian trade data
 source("./R/get_data_br.R")
 
-# Clear the environment
-rm(list = ls())
-
-# Set working directory 
-setwd("C:/Users/debora.bastos/OneDrive - mtegovbr/Documentos/trade_asymmetries")
+# Set working directory
+#setwd("C:/Users/debora.bastos/OneDrive - mtegovbr/Documentos/trade_asymmetries")
 
 #-------------------------------------------------------------------------------
 ## Brazilian Exports to the U.S.
