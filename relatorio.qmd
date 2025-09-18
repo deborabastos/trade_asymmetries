@@ -4,6 +4,8 @@ subtitle: Análise dos dados de Brasil-EUA e Brasil-Reino Unido
 date: 2025/09/18
 autor: "Débora Alves Pereira Bastos"
 format: html
+warning: false
+message: false
 ---
 
 ## Introdução
@@ -13,28 +15,135 @@ Compreender e analisar essas discrepâncias é crucial para melhorar a qualidade
 
 ## Brasil-EUA
 
+#### Dados de Exportação do Brasil vs. Dados de Importação dos EUA
+
+Foram utilizados os dados de exportação do Brasil disponíveis no site [Comex Stat](https://comexstat.mdic.gov.br/pt/home) e os dados de importação dos EUA disponíveis em [USITC DataWeb](https://dataweb.usitc.gov/). A análise abrange o período de 2015 a 2024.
+
+O dado nacional é FOB  
+
+O dado americano é Import General
+
+
+Imports: General
+General imports measures the total physical arrivals of merchandise from foreign countries, whether such merchandise enters the U.S. customs territory immediately (~90% of imports, circa 2022) or is admitted into bonded warehouses or U.S. foreign trade zones (FTZs) under Customs and Border Protection (Customs, or CBP) custody (~10% of imports, circa 2022). This measure is the most appropriate measure when the user needs to analyze product information, country-of-origin information, or analyze net trade flows.
+
+
 
 ```{r}
-#| label: setup
-#| include: false
+#| code-fold: true
 
+library(readxl)
 library(tidyverse)
+library(scales)
 
-smaller <- diamonds |> 
-  filter(carat <= 2.5)
+exp_br_imp_usa_long <- read_csv2("./data/output/exp_br_imp_usa_long.csv", show_col_types = FALSE)
+
+ggplot(exp_br_imp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  scale_color_manual(
+    values = c("exp_br" = "#1f78b4", "imp_usa" = "#e31a1c"),
+    labels = c(
+      "Exportações do Brasil (para os EUA)",
+      "Importações dos EUA (do Brasil)"
+    )
+  ) +
+  scale_x_continuous(breaks = unique(exp_br_imp_usa_long$ano)) +
+  scale_y_continuous(
+    labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")
+  ) +
+  labs(
+    title = "Asimetrias de Comércio: Brasil vs. EUA (2015-2024)",
+    subtitle = "Comparação dos dados de exportação do Brasil e de importação dos EUA",
+    x = "Ano",
+    y = "Valor (bilhões USD)",
+    color = "Dados"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
 ```
 
-We have data about `r nrow(diamonds)` diamonds.
-Only `r nrow(diamonds) - nrow(smaller)` are larger than 2.5 carats.
-The distribution of the remainder is shown below:
+
+
+#### Dados de Importação do Brasil vs. Dados de Exportação dos EUA
+
+Os dados de importação do Brasil são FOB (se precisar consigo chegar no CIF). Os dados americanos foram retirados do site [USITC DataWeb](https://dataweb.usitc.gov/) e possuem as categorias Export: Total e Export: Domestic. A análise abrange o período de 2015 a 2024.
+
+
+
+##### Dados de Exportação Total dos EUA
+
+Exports: Total
+Total exports measures all goods regardless of whether they are domestic- or foreign-origin that are exported from the United States. Total exports = Domestic Exports + Foreign Exports.
 
 ```{r}
-#| label: plot-smaller-diamonds
-#| echo: false
+#| code-fold: true
 
-smaller |> 
-  ggplot(aes(x = carat)) + 
-  geom_freqpoly(binwidth = 0.01)
+imp_br_exp_usa_long <- read_csv2("./data/output/imp_br_exp_total_usa_long.csv", show_col_types = FALSE)
+
+ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  scale_color_manual(
+    values = c("imp_br" = "#1f78b4", "exp_usa" = "#e31a1c"),
+    labels = c(
+      "Importações do Brasil (para os EUA)",
+      "Exportações dos EUA (do Brasil)"
+    )
+  ) +
+  scale_x_continuous(breaks = unique(imp_br_exp_usa_long$ano)) +
+  scale_y_continuous(
+    labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")
+  ) +
+  labs(
+    title = "Asimetrias de Comércio: Brasil vs. EUA (2015-2024)",
+    subtitle = "Comparação dos dados de importação do Brasil e de exportação doméstica dos EUA",
+    x = "Ano",
+    y = "Valor (bilhões USD)",
+    color = "Dados"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
 ```
 
+##### Dados de Exportação Doméstica dos EUA
 
+Exports: Domestic
+Domestic exports measures goods that are grown, produced, or manufactured in the United States as well as commodities of foreign-origin that have been changed or enhanced in value in the United States by virtue of further processing or manufacturing activities conducted in the United States. This measure includes goods manufactured or advanced in value in U.S. foreign trade zones.
+
+
+```{r}
+#| code-fold: true
+
+
+imp_br_exp_usa_long <- read_csv2("./data/output/imp_br_exp_domestic_usa_long.csv", show_col_types = FALSE)
+
+ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  scale_color_manual(
+    values = c("imp_br" = "#1f78b4", "exp_usa" = "#e31a1c"),
+    labels = c(
+      "Importações do Brasil (para os EUA)",
+      "Exportações dos EUA (do Brasil)"
+    )
+  ) +
+  scale_x_continuous(breaks = unique(imp_br_exp_usa_long$ano)) +
+  scale_y_continuous(
+    labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")
+  ) +
+  labs(
+    title = "Asimetrias de Comércio: Brasil vs. EUA (2015-2024)",
+    subtitle = "Comparação dos dados de importação do Brasil e de exportação doméstica dos EUA",
+    x = "Ano",
+    y = "Valor (bilhões USD)",
+    color = "Dados"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
+```
+
+```
