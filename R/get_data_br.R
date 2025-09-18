@@ -19,15 +19,15 @@ get_data_br <- function(
   years <- year_ini:year_end
   url_base <- "https://balanca.economia.gov.br/balanca/bd/comexstat-bd/ncm/"
 
-  if (!dir.exists("data")) {
-    dir.create("data")
+  if (!dir.exists("data/input")) {
+    dir.create("data/input")
   }
 
   # Download dos arquivos
   for (year in years) {
     file_name <- paste0(type, "_", year, ".csv")
     url <- paste0(url_base, file_name)
-    folder <- file.path("data", file_name)
+    folder <- file.path("data/input", file_name)
     if (!file.exists(folder) || overwrite == TRUE) {
       resp <- GET(url, write_disk(folder, overwrite = overwrite))
       cat("File downloaded:", folder, "\n")
@@ -36,14 +36,14 @@ get_data_br <- function(
 
   # Lista arquivos baixados
   files_list <- list.files(
-    "data",
+    "data/input",
     pattern = paste0("^", type, "_\\d{4}\\.csv$"),
     full.names = TRUE
   )
 
   # Filtra dados de interesse
   compiled_file = paste0(
-    "data/",
+    "data/input/",
     type,
     "_brasil_",
     cnty_cod,

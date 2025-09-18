@@ -17,7 +17,7 @@ setwd("C:/Users/debora.bastos/OneDrive - mtegovbr/Documentos/trade_asymmetries")
 #-------------------------------------------------------------------------------
 # Download and read Brazil's export data
 # get_data_br(2015, 2024, type = "EXP", cnty_cod = "628")
-exp_br_uk <- read_csv2("data/EXP_brasil_628_2015_2024.csv", show_col_types = FALSE)
+exp_br_uk <- read_csv2("data/input/EXP_brasil_628_2015_2024.csv", show_col_types = FALSE)
 
 # Summarize Brazil's total exports to the UK by year
 exp_br_uk_ano <- exp_br_uk %>%
@@ -32,7 +32,7 @@ exp_br_uk_ano
 #-------------------------------------------------------------------------------
 # Read UK import data
 imp_uk_br <- read_excel(
-  "data/uk_br_imp_exp.xlsx",
+  "data/input/uk_br_imp_exp.xlsx",
 )
 
 imp_uk_br
@@ -102,7 +102,7 @@ ggplot(exp_br_imp_uk_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
 #-------------------------------------------------------------------------------
 # Download and read Brazil's import data
 # get_data_br(2015, 2024, type = "IMP", cnty_cod = "628")
-imp_br_uk <- read_csv2("data/IMP_brasil_628_2015_2024.csv", show_col_types = FALSE)
+imp_br_uk <- read_csv2("data/input/IMP_brasil_628_2015_2024.csv", show_col_types = FALSE)
 
 imp_br_uk
 
@@ -121,7 +121,7 @@ imp_br_uk_ano
 #-------------------------------------------------------------------------------
 # Read UK export data
 exp_uk_br <- read_excel(
-  "data/uk_br_imp_exp.xlsx"
+  "data/input/uk_br_imp_exp.xlsx"
 )
 
 exp_uk_br

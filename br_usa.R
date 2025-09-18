@@ -17,7 +17,7 @@ source("./R/get_data_br.R")
 #-------------------------------------------------------------------------------
 # Download and read Brazil's export data
 # get_data_br(2015, 2024, type = "EXP", cnty_cod = "249")
-exp_br_eua <- read_csv2("data/EXP_brasil_249_2015_2024.csv", show_col_types = FALSE)
+exp_br_eua <- read_csv2("data/input/EXP_brasil_249_2015_2024.csv", show_col_types = FALSE)
 
 # Summarize Brazil's total exports to the U.S. by year
 exp_br_eua_ano <- exp_br_eua %>%
@@ -32,7 +32,7 @@ exp_br_eua_ano
 #-------------------------------------------------------------------------------
 # Read U.S. import data
 imp_eua_br <- read_excel(
-  "data/IMP_eua_br_2015_2024.xlsx",
+  "data/input/IMP_eua_br_2015_2024.xlsx",
   sheet = "General Customs Value",
   range = "B3:L4218"
 )
@@ -69,6 +69,7 @@ exp_br_imp_usa_long <- exp_br_imp_usa %>%
   mutate(valor_bilhoes = valor_bilhoes / 1e9) # Convert to billions
 
 exp_br_imp_usa_long
+write_csv2(exp_br_imp_usa_long, "data/output/exp_br_imp_usa_long.csv")
 
 # Create the plot
 ggplot(exp_br_imp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
@@ -107,7 +108,7 @@ ggplot(exp_br_imp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
 #-------------------------------------------------------------------------------
 # Download and read Brazil's import data
 # get_data_br(2015, 2024, type = "IMP", cnty_cod = "249")
-imp_br_eua <- read_csv2("data/IMP_brasil_249_2015_2024.csv", show_col_types = FALSE)
+imp_br_eua <- read_csv2("data/input/IMP_brasil_249_2015_2024.csv", show_col_types = FALSE)
 
 imp_br_eua
 
@@ -127,7 +128,7 @@ imp_br_eua_ano
 #-------------------------------------------------------------------------------
 # Read U.S. export data
 exp_eua_br <- read_excel(
-  "data/EXP_eua_br_2015_2024.xlsx",
+  "data/input/EXP_eua_br_2015_2024.xlsx",
   sheet = "FAS Value",
   range = "b3:L4980"
 )
@@ -166,6 +167,8 @@ imp_br_exp_usa_long <- imp_br_exp_usa %>%
   mutate(valor_bilhoes = valor_bilhoes / 1e9) # Convert to billions
 
 imp_br_exp_usa_long
+write_csv2(imp_br_exp_usa_long, "data/output/imp_br_exp_total_usa_long.csv")
+
 
 # Create the plot
 ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
@@ -201,7 +204,7 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
 #-------------------------------------------------------------------------------
 # Read U.S. export data
 exp_eua_br <- read_excel(
-  "data/EXP_eua_dom_br_2015_2024.xlsx",
+  "data/input/EXP_eua_dom_br_2015_2024.xlsx",
   sheet = "FAS Value",
   range = "b3:L4845"
 )
@@ -240,6 +243,8 @@ imp_br_exp_usa_long <- imp_br_exp_usa %>%
   mutate(valor_bilhoes = valor_bilhoes / 1e9) # Convert to billions
 
 imp_br_exp_usa_long
+write_csv2(imp_br_exp_usa_long, "data/output/imp_br_exp_domestic_usa_long.csv")
+
 
 # Create the plot
 ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
@@ -274,7 +279,7 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
 #-------------------------------------------------------------------------------
 # Read U.S. export data
 exp_eua_br <- read_excel(
-  "data/EXP_eua_br_comtrade.xlsx",
+  "data/input/EXP_eua_br_comtrade.xlsx",
 )
 
 exp_eua_br_ano <- exp_eua_br %>%
@@ -302,6 +307,7 @@ imp_br_exp_usa_long <- imp_br_exp_usa %>%
   mutate(valor_bilhoes = valor_bilhoes / 1e9) # Convert to billions
 
 imp_br_exp_usa_long
+write_csv2(imp_br_exp_usa_long, "data/output/imp_br_exp_comtrade_usa_long.csv")
 
 # Create the plot
 ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
@@ -322,6 +328,4 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   ) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "bottom")
-
-
 

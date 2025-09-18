@@ -1,0 +1,40 @@
+---
+title: Assimetrias de dados no comércio internacional
+subtitle: Análise dos dados de Brasil-EUA e Brasil-Reino Unido
+date: 2025/09/18
+autor: "Débora Alves Pereira Bastos"
+format: html
+---
+
+## Introdução
+As assimetrias comerciais bilaterais são um fenômeno conhecido e um desafio significativo nas estatísticas oficiais de comércio internacional, tanto para bens quanto para serviços. Essas assimetrias ocorrem quando as exportações declaradas de um país para outro não correspondem às importações declaradas pelo país parceiro. 
+
+Compreender e analisar essas discrepâncias é crucial para melhorar a qualidade e a comparabilidade dos dados comerciais, apoiar o desenvolvimento de indicadores de globalização e evitar o uso indevido das estatísticas. Além disso, a análise das assimetrias serve como uma ferramenta externa para a garantia de qualidade, auxiliando na identificação de erros e na melhoria da qualidade dos dados de comércio de um país.
+
+## Brasil-EUA
+
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+
+smaller <- diamonds |> 
+  filter(carat <= 2.5)
+```
+
+We have data about `r nrow(diamonds)` diamonds.
+Only `r nrow(diamonds) - nrow(smaller)` are larger than 2.5 carats.
+The distribution of the remainder is shown below:
+
+```{r}
+#| label: plot-smaller-diamonds
+#| echo: false
+
+smaller |> 
+  ggplot(aes(x = carat)) + 
+  geom_freqpoly(binwidth = 0.01)
+```
+
+
