@@ -17,7 +17,10 @@ source("./R/get_data_br.R")
 #-------------------------------------------------------------------------------
 # Download and read Brazil's export data
 # get_data_br(2015, 2024, type = "EXP", cnty_cod = "249")
-exp_br_eua <- read_csv2("data/input/EXP_brasil_249_2015_2024.csv", show_col_types = FALSE)
+exp_br_eua <- read_csv2(
+  "./data/input/EXP_brasil_249_2015_2024.csv",
+  show_col_types = FALSE
+)
 
 # Summarize Brazil's total exports to the U.S. by year
 exp_br_eua_ano <- exp_br_eua %>%
@@ -32,7 +35,7 @@ exp_br_eua_ano
 #-------------------------------------------------------------------------------
 # Read U.S. import data
 imp_eua_br <- read_excel(
-  "data/input/IMP_eua_br_2015_2024.xlsx",
+  "./data/input/IMP_eua_br_2015_2024.xlsx",
   sheet = "General Customs Value",
   range = "B3:L4218"
 )
@@ -69,7 +72,7 @@ exp_br_imp_usa_long <- exp_br_imp_usa %>%
   mutate(valor_bilhoes = valor_bilhoes / 1e9) # Convert to billions
 
 exp_br_imp_usa_long
-write_csv2(exp_br_imp_usa_long, "data/output/exp_br_imp_usa_long.csv")
+write_csv2(exp_br_imp_usa_long, "./data/output/exp_br_imp_usa_long.csv")
 
 # Create the plot
 ggplot(exp_br_imp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
@@ -77,10 +80,15 @@ ggplot(exp_br_imp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   geom_point(size = 2) +
   scale_color_manual(
     values = c("exp_br" = "#1f78b4", "imp_usa" = "#e31a1c"),
-    labels = c("Exportações do Brasil (para os EUA)", "Importações dos EUA (do Brasil)")
+    labels = c(
+      "Exportações do Brasil (para os EUA)",
+      "Importações dos EUA (do Brasil)"
+    )
   ) +
   scale_x_continuous(breaks = unique(exp_br_imp_usa_long$ano)) +
-  scale_y_continuous(labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")) +
+  scale_y_continuous(
+    labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")
+  ) +
   labs(
     title = "Asimetrias de Comércio: Brasil vs. EUA (2015-2024)",
     subtitle = "Comparação dos dados de exportação do Brasil e de importação dos EUA",
@@ -92,23 +100,21 @@ ggplot(exp_br_imp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   theme(legend.position = "bottom")
 
 
-
-
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
-
-
-
 
 #-------------------------------------------------------------------------------
 ## Brazilian Imports from the U.S.
 #-------------------------------------------------------------------------------
 # Download and read Brazil's import data
 # get_data_br(2015, 2024, type = "IMP", cnty_cod = "249")
-imp_br_eua <- read_csv2("data/input/IMP_brasil_249_2015_2024.csv", show_col_types = FALSE)
+imp_br_eua <- read_csv2(
+  "./data/input/IMP_brasil_249_2015_2024.csv",
+  show_col_types = FALSE
+)
 
 imp_br_eua
 
@@ -128,7 +134,7 @@ imp_br_eua_ano
 #-------------------------------------------------------------------------------
 # Read U.S. export data
 exp_eua_br <- read_excel(
-  "data/input/EXP_eua_br_2015_2024.xlsx",
+  "./data/input/EXP_eua_br_2015_2024.xlsx",
   sheet = "FAS Value",
   range = "b3:L4980"
 )
@@ -176,10 +182,15 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   geom_point(size = 2) +
   scale_color_manual(
     values = c("imp_br" = "#1f78b4", "exp_usa" = "#e31a1c"),
-    labels = c("Importações do Brasil (para os EUA)", "Exportações dos EUA (do Brasil)")
+    labels = c(
+      "Importações do Brasil (para os EUA)",
+      "Exportações dos EUA (do Brasil)"
+    )
   ) +
   scale_x_continuous(breaks = unique(imp_br_exp_usa_long$ano)) +
-  scale_y_continuous(labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")) +
+  scale_y_continuous(
+    labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")
+  ) +
   labs(
     title = "Asimetrias de Comércio: Brasil vs. EUA (2015-2024)",
     subtitle = "Comparação dos dados de importação do Brasil e de exportação total dos EUA",
@@ -191,12 +202,6 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   theme(legend.position = "bottom")
 
 
-
-
-
-
-
-
 #-------------------------------------------------------------------------------
 ## U.S. Exports to Brazil
 ## Data from https://dataweb.usitc.gov/trade/search/TotExp/HTS
@@ -204,7 +209,7 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
 #-------------------------------------------------------------------------------
 # Read U.S. export data
 exp_eua_br <- read_excel(
-  "data/input/EXP_eua_dom_br_2015_2024.xlsx",
+  "./data/input/EXP_eua_dom_br_2015_2024.xlsx",
   sheet = "FAS Value",
   range = "b3:L4845"
 )
@@ -252,10 +257,15 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   geom_point(size = 2) +
   scale_color_manual(
     values = c("imp_br" = "#1f78b4", "exp_usa" = "#e31a1c"),
-    labels = c("Importações do Brasil (para os EUA)", "Exportações dos EUA (do Brasil)")
+    labels = c(
+      "Importações do Brasil (para os EUA)",
+      "Exportações dos EUA (do Brasil)"
+    )
   ) +
   scale_x_continuous(breaks = unique(imp_br_exp_usa_long$ano)) +
-  scale_y_continuous(labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")) +
+  scale_y_continuous(
+    labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")
+  ) +
   labs(
     title = "Asimetrias de Comércio: Brasil vs. EUA (2015-2024)",
     subtitle = "Comparação dos dados de importação do Brasil e de exportação doméstica dos EUA",
@@ -267,11 +277,6 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   theme(legend.position = "bottom")
 
 
-
-
-
-
-
 ################################ COMTRADE DATA ##############################
 #-------------------------------------------------------------------------------
 ## U.S. Exports to Brazil
@@ -279,7 +284,7 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
 #-------------------------------------------------------------------------------
 # Read U.S. export data
 exp_eua_br <- read_excel(
-  "data/input/EXP_eua_br_comtrade.xlsx",
+  "./data/input/EXP_eua_br_comtrade.xlsx",
 )
 
 exp_eua_br_ano <- exp_eua_br %>%
@@ -315,10 +320,15 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   geom_point(size = 2) +
   scale_color_manual(
     values = c("imp_br" = "#1f78b4", "exp_usa" = "#e31a1c"),
-    labels = c("Importações do Brasil (para os EUA)", "Exportações dos EUA (do Brasil)")
+    labels = c(
+      "Importações do Brasil (para os EUA)",
+      "Exportações dos EUA (do Brasil)"
+    )
   ) +
   scale_x_continuous(breaks = unique(imp_br_exp_usa_long$ano)) +
-  scale_y_continuous(labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")) +
+  scale_y_continuous(
+    labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")
+  ) +
   labs(
     title = "Asimetrias de Comércio: Brasil vs. EUA (2015-2024)",
     subtitle = "COMTRADE - Comparação dos dados de importação do Brasil e de exportação dos EUA",
@@ -328,4 +338,3 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   ) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "bottom")
-
