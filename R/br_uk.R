@@ -16,7 +16,7 @@ setwd("C:/Users/debora.bastos/OneDrive - mtegovbr/Documentos/trade_asymmetries")
 ## Brazilian Exports to the UK
 #-------------------------------------------------------------------------------
 # Download and read Brazil's export data
-# get_data_br(2015, 2024, type = "EXP", cnty_cod = "628")
+get_data_br(2015, 2024, type = "EXP", cnty_cod = "628")
 exp_br_uk <- read_csv2("data/input/EXP_brasil_628_2015_2024.csv", show_col_types = FALSE)
 
 # Summarize Brazil's total exports to the UK by year
@@ -64,6 +64,7 @@ exp_br_imp_uk_long <- exp_br_imp_uk %>%
   mutate(valor_bilhoes = valor_bilhoes / 1e9) # Convert to billions
 
 exp_br_imp_uk_long
+write_csv2(exp_br_imp_uk_long, "./data/output/exp_br_imp_uk_long.csv")
 
 # Create the plot
 ggplot(exp_br_imp_uk_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
@@ -101,7 +102,7 @@ ggplot(exp_br_imp_uk_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
 ## Brazilian Imports from the UK
 #-------------------------------------------------------------------------------
 # Download and read Brazil's import data
-# get_data_br(2015, 2024, type = "IMP", cnty_cod = "628")
+get_data_br(2015, 2024, type = "IMP", cnty_cod = "628")
 imp_br_uk <- read_csv2("data/input/IMP_brasil_628_2015_2024.csv", show_col_types = FALSE)
 
 imp_br_uk
@@ -154,6 +155,8 @@ imp_br_exp_uk_long <- imp_br_exp_uk %>%
   mutate(valor_bilhoes = valor_bilhoes / 1e9) # Convert to billions
 
 imp_br_exp_uk_long
+write_csv2(imp_br_exp_uk_long, "./data/output/imp_br_exp_uk_long.csv")
+
 
 # Create the plot
 ggplot(imp_br_exp_uk_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
