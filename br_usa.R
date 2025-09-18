@@ -323,3 +323,5 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "bottom")
 
+
+
