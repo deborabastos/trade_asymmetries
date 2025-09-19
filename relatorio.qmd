@@ -15,13 +15,13 @@ Compreender e analisar essas discrepâncias é relevante para melhorar a qualida
 
 ## Brasil-EUA
 
+Para essa análise, foram utilizados os dados comerciais do Brasil disponíveis no site [Comex Stat](https://comexstat.mdic.gov.br/pt/home) e os dados dos EUA disponíveis em [USITC DataWeb](https://dataweb.usitc.gov/). A análise abrange o período de 2015 a 2024.
+
 #### Dados de Exportação do Brasil vs. Dados de Importação dos EUA
 
-Para essa análise, foram utilizados os dados de exportação do Brasil disponíveis no site [Comex Stat](https://comexstat.mdic.gov.br/pt/home) e os dados de importação dos EUA disponíveis em [USITC DataWeb](https://dataweb.usitc.gov/). A análise abrange o período de 2015 a 2024.
+Os dados oficiais de exportação do Brasil correspondem ao valor em dólar no formato "Free-On-Board" (FOB). Isso significa que o valor inclui o preço de venda da mercadoria, além dos custos de transporte interno, taxas de exportação e carregamento no meio de transporte internacional.
 
-Os dados nacionais correspondem ao valor em dólar no formato "Free-On-Board" (FOB) das exportações do Brasil para os Estados Unidos. Isso significa que o valor inclui o preço de venda da mercadoria, além dos custos de transporte interno, taxas de exportação e carregamento no meio de transporte internacional.
-
-Os dados americanos, por sua vez, correspondem ao valor em dólar, na modalidade "Cost, Insurance and Freight" (CIF). Este valor considera, além do custo FOB, os custos de transporte internacional e seguro da mercadoria até o destino. Essa diferença na contabilização (FOB vs. CIF) já explica parte significativa das assimetrias identificadas na análise em tela.
+Os dados de importação norte-americanos, por sua vez, correspondem ao valor em dólar, na modalidade "Cost, Insurance and Freight" (CIF). Este valor considera, além do custo FOB, os custos do transporte internacional e o seguro das mercadorias até a chegada no destino. Essa diferença na contabilização (FOB vs. CIF) já explica parte significativa das assimetrias identificadas na análise em tela.
 
 O gráfico abaixo demonstra que os valores de exportação do Brasil e de importação dos EUA se comportam de maneira muito similar, com os valores norte-americanos sempre superiores aos valores brasileiros, o que já era esperado pela diferença na metodologia de contabilização.
 
@@ -38,10 +38,10 @@ ggplot(exp_br_imp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   geom_line(linewidth = 1) +
   geom_point(size = 2) +
   scale_color_manual(
-    values = c("exp_br" = "#1f78b4", "imp_usa" = "#e31a1c"),
+    values = c("exp_br" = "#098e68ff", "imp_usa" = "#e31a1c"),
     labels = c(
-      "Exportações do Brasil (para os EUA)",
-      "Importações dos EUA (do Brasil)"
+      "exp_br" = "Exportações do Brasil (para os EUA)",
+      "imp_usa" = "Importações dos EUA (do Brasil)"
     )
   ) +
   scale_x_continuous(breaks = unique(exp_br_imp_usa_long$ano)) +
@@ -93,8 +93,7 @@ A maior diferença  foi observada no ano de `r ano_maior_diferenca`, quando os E
 
 #### Dados de Importação do Brasil vs. Dados de Exportação dos EUA
 
-
-
+Para a análise dos dados de importação brasileira e exportação dos EUA, foram utilizadas as mesmas fontes anteriormente citadas. 
 
 Os dados de importação do Brasil são FOB (se precisar consigo chegar no CIF). Os dados americanos foram retirados do site [USITC DataWeb](https://dataweb.usitc.gov/) e possuem as categorias Export: Total e Export: Domestic. A análise abrange o período de 2015 a 2024.
 
@@ -114,10 +113,10 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   geom_line(linewidth = 1) +
   geom_point(size = 2) +
   scale_color_manual(
-    values = c("imp_br" = "#1f78b4", "exp_usa" = "#e31a1c"),
+    values = c("imp_br" = "#098e68ff", "exp_usa" = "#e31a1c"),
     labels = c(
-      "Importações do Brasil (para os EUA)",
-      "Exportações dos EUA (do Brasil)"
+      "imp_br" = "Importações do Brasil (para os EUA)",
+      "exp_usa" = "Exportações dos EUA (do Brasil)"
     )
   ) +
   scale_x_continuous(breaks = unique(imp_br_exp_usa_long$ano)) +
@@ -125,7 +124,7 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
     labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")
   ) +
   labs(
-    title = "Asimetrias de Comércio: Brasil vs. EUA (2015-2024)",
+    title = "Assimetrias de Comércio: Brasil vs. EUA (2015-2024)",
     subtitle = "Comparação dos dados de importação do Brasil e de exportação doméstica dos EUA",
     x = "Ano",
     y = "Valor (bilhões USD)",
@@ -152,10 +151,10 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   geom_line(linewidth = 1) +
   geom_point(size = 2) +
   scale_color_manual(
-    values = c("imp_br" = "#1f78b4", "exp_usa" = "#e31a1c"),
+    values = c("imp_br" = "#098e68ff", "exp_usa" = "#e31a1c"),
     labels = c(
-      "Importações do Brasil (para os EUA)",
-      "Exportações dos EUA (do Brasil)"
+      "imp_br" = "Importações do Brasil (para os EUA)",
+      "exp_usa" = "Exportações dos EUA (do Brasil)"
     )
   ) +
   scale_x_continuous(breaks = unique(imp_br_exp_usa_long$ano)) +
@@ -163,7 +162,7 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
     labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")
   ) +
   labs(
-    title = "Asimetrias de Comércio: Brasil vs. EUA (2015-2024)",
+    title = "Assimetrias de Comércio: Brasil vs. EUA (2015-2024)",
     subtitle = "Comparação dos dados de importação do Brasil e de exportação doméstica dos EUA",
     x = "Ano",
     y = "Valor (bilhões USD)",
