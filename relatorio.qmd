@@ -11,7 +11,7 @@ message: false
 ## Introdução
 As assimetrias comerciais bilaterais são um fenômeno conhecido e um desafio significativo nas estatísticas oficiais de comércio internacional, tanto para bens quanto para serviços. Essas assimetrias ocorrem quando as exportações declaradas de um país para outro não correspondem às importações declaradas pelo país parceiro. 
 
-Compreender e analisar essas discrepâncias é relevante para melhorar a qualidade e a comparabilidade dos dados comerciais, apoiar o desenvolvimento de indicadores e evitar conclusões indevido no uso das estatísticas. Além disso, a análise das assimetrias serve como uma ferramenta externa para a garantia de qualidade dos dados nacionais, auxiliando na identificação de erros e na melhoria da qualidade de sua coleta.
+Compreender e analisar essas discrepâncias é relevante para melhorar a qualidade e a comparabilidade dos dados comerciais, apoiar o desenvolvimento de indicadores e evitar o uso indevido das estatísticas. Além disso, a análise das assimetrias serve como uma ferramenta externa para a garantia de qualidade dos dados nacionais, auxiliando na identificação de erros e na melhoria da qualidade de sua coleta.
 
 ## Brasil-EUA
 
@@ -40,8 +40,8 @@ ggplot(exp_br_imp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   scale_color_manual(
     values = c("exp_br" = "#098e68ff", "imp_usa" = "#e31a1c"),
     labels = c(
-      "exp_br" = "Exportações do Brasil (para os EUA)",
-      "imp_usa" = "Importações dos EUA (do Brasil)"
+      "exp_br" = "Exportações do Brasil (para os EUA) - FOB",
+      "imp_usa" = "Importações dos EUA (do Brasil) - CIF"
     )
   ) +
   scale_x_continuous(breaks = unique(exp_br_imp_usa_long$ano)) +
@@ -93,53 +93,13 @@ A maior diferença  foi observada no ano de `r ano_maior_diferenca`, quando os E
 
 #### Dados de Importação do Brasil vs. Dados de Exportação dos EUA
 
-Para a análise dos dados de importação brasileira e exportação dos EUA, foram utilizadas as mesmas fontes anteriormente citadas. 
+Para a análise dessa relação, foram utilizadas as mesmas fontes e o mesmo intervalo de tempo anteriormente citados: 2015 a 2024.
 
-Os dados de importação do Brasil são FOB (se precisar consigo chegar no CIF). Os dados americanos foram retirados do site [USITC DataWeb](https://dataweb.usitc.gov/) e possuem as categorias Export: Total e Export: Domestic. A análise abrange o período de 2015 a 2024.
+Após análise preliminar, concluiu-se que os dados mais adequados para a comparação seriam os dados de exportações doméstica dos EUA (Exports: Domestic) e as importações brasileiras, ambos em valor FOB.
 
+Os Estados Unidos divulgam também dados de exportações totais (Exports: Total), que incluem as exportações domésticas acrescidas das reexportações (Exports: Foreign). No entanto, por não terem origem nos EUA, essas reexportações não são capturadas nas estatísticas brasileiras de importações dos Estados Unidos. Portanto, optou-se por utilizar apenas os dados de exportação doméstica dos EUA para essa análise.
 
-
-##### Dados de Exportação Total dos EUA
-
-Exports: Total
-Total exports measures all goods regardless of whether they are domestic- or foreign-origin that are exported from the United States. Total exports = Domestic Exports + Foreign Exports.
-
-```{r}
-#| code-fold: true
-
-imp_br_exp_usa_long <- read_csv2("./data/output/imp_br_exp_total_usa_long.csv", show_col_types = FALSE)
-
-ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2) +
-  scale_color_manual(
-    values = c("imp_br" = "#098e68ff", "exp_usa" = "#e31a1c"),
-    labels = c(
-      "imp_br" = "Importações do Brasil (para os EUA)",
-      "exp_usa" = "Exportações dos EUA (do Brasil)"
-    )
-  ) +
-  scale_x_continuous(breaks = unique(imp_br_exp_usa_long$ano)) +
-  scale_y_continuous(
-    labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")
-  ) +
-  labs(
-    title = "Assimetrias de Comércio: Brasil vs. EUA (2015-2024)",
-    subtitle = "Comparação dos dados de importação do Brasil e de exportação doméstica dos EUA",
-    x = "Ano",
-    y = "Valor (bilhões USD)",
-    color = "Dados"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(legend.position = "bottom")
-
-```
-
-##### Dados de Exportação Doméstica dos EUA
-
-Exports: Domestic
-Domestic exports measures goods that are grown, produced, or manufactured in the United States as well as commodities of foreign-origin that have been changed or enhanced in value in the United States by virtue of further processing or manufacturing activities conducted in the United States. This measure includes goods manufactured or advanced in value in U.S. foreign trade zones.
-
+O gráfico abaixo indica que os dados brasileiros e americanos se comportam de maneira muito similar. Na maior parte dos anos, os valores norte-americanos são ligeiramente superiores aos valores brasileiros, com exceção de 2022 e 2023, quando os valores brasileiros superaram os valores americanos.
 
 ```{r}
 #| code-fold: true
@@ -147,14 +107,15 @@ Domestic exports measures goods that are grown, produced, or manufactured in the
 
 imp_br_exp_usa_long <- read_csv2("./data/output/imp_br_exp_domestic_usa_long.csv", show_col_types = FALSE)
 
+# Create the plot
 ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   geom_line(linewidth = 1) +
   geom_point(size = 2) +
   scale_color_manual(
     values = c("imp_br" = "#098e68ff", "exp_usa" = "#e31a1c"),
     labels = c(
-      "imp_br" = "Importações do Brasil (para os EUA)",
-      "exp_usa" = "Exportações dos EUA (do Brasil)"
+      "imp_br" = "Importações do Brasil (para os EUA) - FOB",
+      "exp_usa" = "Exportações dos EUA (do Brasil) - FOB"
     )
   ) +
   scale_x_continuous(breaks = unique(imp_br_exp_usa_long$ano)) +
@@ -173,4 +134,35 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
 
 ```
 
+
+
+```{r}
+#| code-fold: true
+
+imp_br_exp_us <- imp_br_exp_usa_long %>%
+  pivot_wider(
+    names_from = tipo,
+    values_from = valor_bilhoes
+  )
+
+imp_br_exp_us_diff <- imp_br_exp_us %>%
+  mutate(diferenca_percentual = ((exp_usa - imp_br) / imp_br) * 100) %>%
+  mutate(diferenca_valor = ((exp_usa - imp_br)))
+
+indice_max <- which.max(imp_br_exp_us_diff$diferenca_percentual)
+maior_diferenca <- round(imp_br_exp_us_diff$diferenca_percentual[indice_max],2)
+ano_maior_diferenca <- imp_br_exp_us_diff$ano[indice_max]
+
+indice_min <- which.min(imp_br_exp_us_diff$diferenca_percentual)
+menor_diferenca <- round(imp_br_exp_us_diff$diferenca_percentual[indice_min],2)
+ano_menor_diferenca <- imp_br_exp_us_diff$ano[indice_min]
+
+média = round(mean(imp_br_exp_us_diff$diferenca_percentual),2)
+
 ```
+
+
+A maior diferença  foi observada no ano de `r ano_maior_diferenca`, quando os EUA contabilizaram um valor de exportação `r maior_diferenca`% superior ao valor de importação declarado pelo Brasil. Por outro lado, em `r ano_menor_diferenca`, o Brasil declarou um valor de importação `r abs(menor_diferenca)`% superior ao valor de exportação declarado pelos EUA. Na  média, os valores de exportação dos EUA foram `r média`% superiores aos valores de importação do Brasil no período analisado, o que se pode considerar uma boa convergência entre os dados.
+
+
+

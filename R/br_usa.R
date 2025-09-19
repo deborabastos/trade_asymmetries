@@ -131,16 +131,22 @@ imp_br_eua <- read_csv2(
   show_col_types = FALSE
 )
 
-imp_br_eua
+imp_br_eua[, c("CO_ANO", "VL_FOB", "VL_FRETE", "VL_SEGURO")]
 
 # Summarize Brazil's total imports from the U.S. by year
 imp_br_eua_ano <- imp_br_eua %>%
   group_by(CO_ANO) %>%
-  summarise(TOTAL_ANO = sum(VL_FOB, na.rm = TRUE)) %>%
+  summarise(TOTAL_ANO = sum((VL_FOB), na.rm = TRUE)) %>%
   rename(ano = CO_ANO, imp_br = TOTAL_ANO)
 
 imp_br_eua_ano
 
+imp_br_eua_ano_CIF <- imp_br_eua %>%
+  group_by(CO_ANO) %>%
+  summarise(TOTAL_ANO = sum((VL_FOB+VL_FRETE+VL_SEGURO), na.rm = TRUE)) %>%
+  rename(ano = CO_ANO, imp_br = TOTAL_ANO)
+
+imp_br_eua_ano_CIF
 
 #-------------------------------------------------------------------------------
 ## U.S. Exports to Brazil
@@ -171,7 +177,7 @@ exp_eua_br_ano <- exp_eua_br %>%
 exp_eua_br_ano
 
 #-------------------------------------------------------------------------------
-## Combine and Plot the Data
+## FOB Combine and Plot the Data
 #-------------------------------------------------------------------------------
 # Join the two data frames
 imp_br_exp_usa <- full_join(imp_br_eua_ano, exp_eua_br_ano, by = "ano")
@@ -198,8 +204,8 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   scale_color_manual(
     values = c("imp_br" = "#098e68ff", "exp_usa" = "#e31a1c"),
     labels = c(
-      "imp_br" = "Importações do Brasil (para os EUA)",
-      "exp_usa" = "Exportações dos EUA (do Brasil)"
+      "imp_br" = "Importações do Brasil (para os EUA) - FOB",
+      "exp_usa" = "Exportações dos EUA (do Brasil) - FOB"
     )
   ) +
   scale_x_continuous(breaks = unique(imp_br_exp_usa_long$ano)) +
@@ -215,6 +221,68 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   ) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "bottom")
+
+
+
+
+#-------------------------------------------------------------------------------
+## CIF Combine and Plot the Data
+#-------------------------------------------------------------------------------
+# Join the two data frames
+imp_br_exp_usa_CIF <- full_join(imp_br_eua_ano_CIF, exp_eua_br_ano, by = "ano")
+
+imp_br_exp_usa_CIF
+
+# Convert to a "long" format for easier plotting with ggplot2
+imp_br_exp_usa_CIF_long <- imp_br_exp_usa_CIF %>%
+  pivot_longer(
+    cols = c(imp_br, exp_usa),
+    names_to = "tipo",
+    values_to = "valor_bilhoes"
+  ) %>%
+  mutate(valor_bilhoes = valor_bilhoes / 1e9) # Convert to billions
+
+imp_br_exp_usa_CIF_long
+write_csv2(imp_br_exp_usa_CIF_long, "data/output/imp_br_exp_CIF_total_usa_long.csv")
+
+
+# Create the plot
+ggplot(imp_br_exp_usa_CIF_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  scale_color_manual(
+    values = c("imp_br" = "#098e68ff", "exp_usa" = "#e31a1c"),
+    labels = c(
+      "imp_br" = "Importações do Brasil (para os EUA) - CIF",
+      "exp_usa" = "Exportações dos EUA (do Brasil) - FOB"
+    )
+  ) +
+  scale_x_continuous(breaks = unique(imp_br_exp_usa_CIF_long$ano)) +
+  scale_y_continuous(
+    labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")
+  ) +
+  labs(
+    title = "Assimetrias de Comércio: Brasil vs. EUA (2015-2024)",
+    subtitle = "Comparação dos dados de importação do Brasil e de exportação total dos EUA",
+    x = "Ano",
+    y = "Valor (bilhões USD)",
+    color = "Dados"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #-------------------------------------------------------------------------------
@@ -273,8 +341,8 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   scale_color_manual(
     values = c("imp_br" = "#098e68ff", "exp_usa" = "#e31a1c"),
     labels = c(
-      "imp_br" = "Importações do Brasil (para os EUA)",
-      "exp_usa" = "Exportações dos EUA (do Brasil)"
+      "imp_br" = "Importações do Brasil (para os EUA) - FOB",
+      "exp_usa" = "Exportações dos EUA (do Brasil) - FOB"
     )
   ) +
   scale_x_continuous(breaks = unique(imp_br_exp_usa_long$ano)) +
@@ -290,6 +358,69 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   ) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "bottom")
+
+
+
+
+#-------------------------------------------------------------------------------
+## CIF Combine and Plot the Data
+#-------------------------------------------------------------------------------
+# Join the two data frames
+imp_br_exp_usa_CIF <- full_join(imp_br_eua_ano_CIF, exp_eua_br_ano, by = "ano")
+
+imp_br_exp_usa_CIF
+
+# Convert to a "long" format for easier plotting with ggplot2
+imp_br_exp_usa_CIF_long <- imp_br_exp_usa_CIF %>%
+  pivot_longer(
+    cols = c(imp_br, exp_usa),
+    names_to = "tipo",
+    values_to = "valor_bilhoes"
+  ) %>%
+  mutate(valor_bilhoes = valor_bilhoes / 1e9) # Convert to billions
+
+imp_br_exp_usa_CIF_long
+write_csv2(imp_br_exp_usa_CIF_long, "data/output/imp_br_exp_CIF_domestic_usa_long.csv")
+
+
+# Create the plot
+ggplot(imp_br_exp_usa_CIF_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  scale_color_manual(
+    values = c("imp_br" = "#098e68ff", "exp_usa" = "#e31a1c"),
+    labels = c(
+      "imp_br" = "Importações do Brasil (para os EUA) - CIF",
+      "exp_usa" = "Exportações dos EUA (do Brasil) - FOB"
+    )
+  ) +
+  scale_x_continuous(breaks = unique(imp_br_exp_usa_CIF_long$ano)) +
+  scale_y_continuous(
+    labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")
+  ) +
+  labs(
+    title = "Assimetrias de Comércio: Brasil vs. EUA (2015-2024)",
+    subtitle = "Comparação dos dados de importação do Brasil e de exportação domesticas dos EUA",
+    x = "Ano",
+    y = "Valor (bilhões USD)",
+    color = "Dados"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ################################ COMTRADE DATA ##############################
@@ -353,3 +484,7 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   ) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "bottom")
+
+
+
+
