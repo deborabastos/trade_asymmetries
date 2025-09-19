@@ -60,7 +60,7 @@ ggplot(exp_br_imp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
     color = "Dados"
   ) +
   theme_minimal(base_size = 12) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", legend.title = element_blank(), legend.text=element_text(size=8))
 
 ```
 
@@ -134,7 +134,7 @@ ggplot(imp_br_exp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
     color = "Dados"
   ) +
   theme_minimal(base_size = 12) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", legend.title = element_blank(), legend.text=element_text(size=8))
 
 ```
 
@@ -216,7 +216,7 @@ ggplot(exp_br_imp_uk_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
     color = "Dados"
   ) +
   theme_minimal(base_size = 12) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", legend.title = element_blank(), legend.text=element_text(size=8))
 ```
 
 
@@ -265,6 +265,6 @@ ggplot(imp_br_exp_uk_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
     color = "Dados"
   ) +
   theme_minimal(base_size = 12) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", legend.title = element_blank(), legend.text=element_text(size=8))
 
 ```
