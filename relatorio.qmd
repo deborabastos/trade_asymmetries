@@ -1,11 +1,15 @@
 ---
 title: Assimetrias de dados no comércio internacional
-subtitle: Análise dos dados de Brasil-EUA e Brasil-Reino Unido
-date: 2025/09/18
+subtitle: Análise dos dados Brasil-EUA e Brasil-Reino Unido
 autor: "Débora Alves Pereira Bastos"
-format: html
+format: 
+  pdf:
+    number-sections: true
+    mainfont: Calibri
+    fontsize: 12pt
+    whitespace: medium
+echo: false
 warning: false
-message: false
 ---
 
 ## Introdução
@@ -13,7 +17,7 @@ As assimetrias comerciais bilaterais são um fenômeno conhecido e um desafio si
 
 Compreender e analisar essas discrepâncias é relevante para melhorar a qualidade e a comparabilidade dos dados comerciais, apoiar o desenvolvimento de indicadores e evitar o uso indevido das estatísticas. Além disso, a análise das assimetrias serve como uma ferramenta externa para a garantia de qualidade dos dados nacionais, auxiliando na identificação de erros e na melhoria da qualidade de sua coleta.
 
-## Brasil-EUA
+## Brasil-Estados Unidos
 
 Para essa análise, foram utilizados os dados comerciais do Brasil disponíveis no site [Comex Stat](https://comexstat.mdic.gov.br/pt/home) e os dados dos EUA disponíveis em [USITC DataWeb](https://dataweb.usitc.gov/). A análise abrange o período de 2015 a 2024.
 
@@ -166,3 +170,101 @@ A maior diferença  foi observada no ano de `r ano_maior_diferenca`, quando os E
 
 
 
+## Brasil-Reino Unido
+
+Para essa análise, foram utilizados os dados comerciais do Brasil disponíveis no site [Comex Stat](https://comexstat.mdic.gov.br/pt/home) e os dados do Reino Unido disponíveis no site [UN COMTRADE Database](https://comtradeplus.un.org/). A análise abrange o período de 2015 a 2024.
+
+#### Dados de Exportação do Brasil vs. Dados de Importação do Reino Unido
+
+
+```{r}
+
+exp_br_imp_uk_long <- read_csv2("./data/output/exp_br_imp_uk_long.csv", show_col_types = FALSE)
+
+ggplot(exp_br_imp_uk_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  geom_vline(
+    aes(
+      xintercept = 2021, 
+      linetype = "Brexit"),
+      color = "black",
+      linetype = "dashed",
+      linewidth = 1) +
+  geom_text(
+    aes(
+      x = 2021,                       # Posição X da linha
+      y = max(exp_br_imp_uk_long$valor_bilhoes) * 0.95,    # Posição Y (ajustada para ficar no topo)
+      label = "Brexit"                # O texto a ser exibido
+    ),
+    hjust = -0.2,                        # Alinhamento horizontal (0 = à direita do ponto)
+    vjust = 0,                        # Alinhamento vertical (0 = abaixo do ponto)
+    size = 4,                         # Tamanho da fonte
+    color = "black"                   # Cor do texto
+  ) +
+  scale_color_manual(
+    values = c("exp_br" = "#098e68ff", "imp_uk" = "#e31a1c"),
+    labels = c("exp_br" = "Exportações do Brasil (para os UK)", "imp_uk" = "Importações dos UK (do Brasil)")
+  ) +
+  scale_x_continuous(breaks = unique(exp_br_imp_uk_long$ano)) +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")) +
+  labs(
+    title = "Assimetrias de Comércio: Brasil vs. UK (2015-2024)",
+    subtitle = "Comparação dos dados de exportação do Brasil e de importação dos UK",
+    x = "Ano",
+    y = "Valor (bilhões USD)",
+    color = "Dados"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+
+
+
+#### Dados de Importação do Brasil vs. Dados de Exportação do Reino Unido
+
+
+
+```{r}
+
+imp_br_exp_uk_long <- read_csv2("./data/output/imp_br_exp_uk_long.csv", show_col_types = FALSE)
+
+ggplot(imp_br_exp_uk_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  geom_vline(
+    aes(
+      xintercept = 2021, 
+      linetype = "Brexit"),
+      color = "black",
+      linetype = "dashed",
+      linewidth = 1) +
+  geom_text(
+    aes(
+      x = 2021,                       # Posição X da linha
+      y = max(imp_br_exp_uk_long$valor_bilhoes) * 0.95,    # Posição Y (ajustada para ficar no topo)
+      label = "Brexit"                # O texto a ser exibido
+    ),
+    hjust = -0.2,                        # Alinhamento horizontal (0 = à direita do ponto)
+    vjust = 0,                        # Alinhamento vertical (0 = abaixo do ponto)
+    size = 4,                         # Tamanho da fonte
+    color = "black"                   # Cor do texto
+  ) +
+  scale_color_manual(
+    values = c("imp_br" = "#098e68ff", "exp_uk" = "#e31a1c"),
+    labels = c("imp_br" = "Importações do Brasil (para os UK)", "exp_uk" = "Exportações do UK (do Brasil)")
+  ) +
+  scale_x_continuous(breaks = unique(imp_br_exp_uk_long$ano)) +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "$", scale = 1, suffix = "B")) +
+  labs(
+    title = "Assimetrias de Comércio: Brasil vs. UK (2015-2024)",
+    subtitle = "Comparação dos dados de importação do Brasil e de exportação do UK",
+    x = "Ano",
+    y = "Valor (bilhões USD)",
+    color = "Dados"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
+```
