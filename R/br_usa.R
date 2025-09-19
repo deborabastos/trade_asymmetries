@@ -62,6 +62,16 @@ exp_br_imp_usa <- full_join(exp_br_eua_ano, imp_eua_br_ano, by = "ano")
 
 exp_br_imp_usa
 
+# Diff
+
+# Calcula a diferença percentual e adiciona a nova coluna
+exp_br_imp_usa_diff <- exp_br_imp_usa %>%
+  mutate(diferenca_percentual = ((imp_usa - exp_br) / exp_br) * 100) %>%
+  mutate(diferenca_valor = ((imp_usa - exp_br)))
+
+# Exibe o dataframe resultante
+print(exp_br_imp_usa_diff)
+
 # Convert to a "long" format for easier plotting with ggplot2
 exp_br_imp_usa_long <- exp_br_imp_usa %>%
   pivot_longer(
@@ -98,6 +108,11 @@ ggplot(exp_br_imp_usa_long, aes(x = ano, y = valor_bilhoes, color = tipo)) +
   ) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "bottom")
+
+
+
+
+
 
 
 #-------------------------------------------------------------------------------
